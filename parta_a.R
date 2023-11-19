@@ -3,18 +3,7 @@ library (kernlab)
 library(e1071)
 
 # Creamos la funci�n que dir� a que clase pertenece cada punto
-print_clasificacion <- function (x, w, b) {
-  if ((t (w) %*% x + b) >= 0)
-  {
-    print (x)
-    print("Pertence a la clase: 1")
-  }
-  else
-  {
-    print (x)
-    print("Pertence a la clase: -1")
-  }
-}
+
 
 ## APARTADO A ##################################################################
 
@@ -26,7 +15,7 @@ dataA <- data.frame(
 )
 # Indicamos que la columna y es la importante
 dataA$y <- as.factor(dataA$y)
-
+  
 # Creamos el SVM con los datos del A con un kernel lineal
 svmA <- svm(y~., dataA , kernel="linear")
 
@@ -52,7 +41,6 @@ bA <- -svmA$rho
 
 # Calcular la ecuacion del hiperplano y de los planos de soporte positivo
 # y negativo
-Withd=2 / (sum (sqrt ((wA)^2)))
 paste(c("[",wA,"]' * x + [",bA,"] = 0"), collapse=" ")
 paste(c("[",wA,"]' * x + [",bA,"] = 1"), collapse=" ")
 paste(c("[",wA,"]' * x + [",bA,"] = -1"), collapse=" ")
