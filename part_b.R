@@ -1,5 +1,6 @@
 library(kernlab)
 library(e1071)
+source("lib.R")
 
 # Define data
 data <- data.frame(
@@ -13,6 +14,7 @@ data$y <- as.factor(data$y)
 svmB <- svm(y~., data, kernel="linear")
 supportVectors <- data[svmB$index,1:2]
 supportVectors
+plot(supportVectors)
 
 # 2. Kernel values 
 
@@ -24,7 +26,7 @@ kernel_matrix
 wB <- crossprod(as.matrix(supportVectors), svmB$coefs)
 widthB = 2/(sqrt(sum((wB)^2)))
 widthB
-# 4. Vector of weights, noraml to hyperplane (W)
+# 4. Vector of weights, normal to hyperplane (W)
 wB
 # 5. Vector B
 bB <- svmB$rho
