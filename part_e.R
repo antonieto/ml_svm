@@ -1,5 +1,4 @@
 library(kernlab)
-
 source("lib.R")
 
 transform <- function(x1, x2) {
@@ -20,9 +19,9 @@ apply_transform <- function(row) {
 
 # Define data
 data <- data.frame(
-  x1 = c(2, 2, -2, -2, 2, 2, -2, -2, 1, 1, -1, -1),
-  x2 = c(2, -2, -2, 2, 2, -2, -2, 2, 1, -1, -1, 1),
-  y = c(1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1)
+  x1 = c(3, 3, 6, 6, 1, 0, 0, -1),
+  x2 = c(1, -1, 1, -1, 0, 1, -1, 0),
+  y = c(1, 1, 1, 1, -1, -1 ,-1 ,-1)
 )
 
 # Apply the transformation to each row using by
@@ -45,7 +44,6 @@ kernel_matrix
 
 # 3. Width of street
 w <- colSums(coef(svm)[[1]] * data[SVindex(svm),])
-# (Removes the 'y' column from w vector)
 w <- w[-3]
 b <- svm@b
 
@@ -72,3 +70,6 @@ abline((b-1)/w[2],-w[1]/w[2],lty=2)
 paste(c("[",w,"]' * x + [",b,"] = 0"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = 1"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = -1"), collapse=" ")
+
+# 7. Classify
+print_clasificacion(c(4, 5), w, b)

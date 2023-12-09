@@ -24,7 +24,7 @@ kernel_matrix
 
 # 3. Width of street
 w <- colSums(coef(svm)[[1]] * data[SVindex(svm),])
-w
+w <- w[-3]
 b <- svm@b
 
 widthB = 2/(sqrt(sum((w)^2)))
