@@ -1,0 +1,1 @@
+data <- read.csv("Titanic_Lab3/train.csv")
