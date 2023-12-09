@@ -72,3 +72,7 @@ abline((b-1)/w[2],-w[1]/w[2],lty=2)
 paste(c("[",w,"]' * x + [",b,"] = 0"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = 1"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = -1"), collapse=" ")
+
+# 7. Point classification
+print_clasificacion(c(8,8), w, b)
+print_clasificacion(c(-2,-2), w, b)
