@@ -2,6 +2,22 @@ library(kernlab)
 
 source("lib.R")
 
+transform <- function(x1, x2) {
+  if (sqrt(x1^2 + x2^2) > 2) {
+    transformed.x1 <- 4 - x2 + abs(x1 - x2)
+    transformed.x2 <- 4 - x1 + abs(x1 - x2)
+    return(c(transformed.x1, transformed.x2))
+  } 
+  return(c(x1, x2))
+}
+
+apply_transform <- function(row) {
+  transformed <- transform(row$x1, row$x2)
+  row$x1 <- transformed[1]
+  row$x2 <- transformed[2]
+  return(row)
+}
+
 # Define data
 data <- data.frame(
   x1 = c(2, 2, -2, -2, 2, 2, -2, -2, 1, 1, -1, -1),
@@ -9,8 +25,13 @@ data <- data.frame(
   y = c(1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1)
 )
 
+# Apply the transformation to each row using by
+transformed_data <- by(data, INDICES = seq_len(nrow(data)), FUN = apply_transform)
 
-svm <- ksvm(y~., data, type="C-svc",C = 100, kernel="vanilladot")
+# Combine the result back into a data frame
+data <- do.call(rbind, transformed_data)
+
+svm <- ksvm(y~., data, type="C-svc",C = 100, kernel="vanilladot", scaled=c())
 
 # 1. Determine support vectors 
 supportVectors <- data[svm@SVindex, -3]
