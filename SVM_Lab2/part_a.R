@@ -1,6 +1,7 @@
 # Importamos las Librer�as necesarias
 library (kernlab)
 library(e1071)
+source("lib.R")
 
 # Creamos la funci�n que dir� a que clase pertenece cada punto
 

@@ -22,7 +22,6 @@ dot_product_kernel <- function(v1, v2) {
 #' @param kernel_function A function that applies an operation between two
 #' vectors and returns a number.
 get_kernel_matrix <- function(vectors, kernel_function) {
-  print(vectors)
   kernel_matrix <- matrix(0, nrow=nrow(vectors), ncol=nrow(vectors))
   COMBINATION_SIZE <- 2
   combinations <- combn(nrow(vectors), COMBINATION_SIZE)
