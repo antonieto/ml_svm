@@ -1,9 +1,9 @@
-# Importamos las Librerías necesarias
+# Importamos las Librerias necesarias
 library (kernlab)
 library(e1071)
 source("lib.R")
 
-# Creamos la función que dice a que clase pertenece cada punto
+# Creamos la funcion que dice a que clase pertenece cada punto
 
 
 ## APARTADO A ###################################
