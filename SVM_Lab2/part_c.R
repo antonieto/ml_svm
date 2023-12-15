@@ -4,13 +4,13 @@ source("lib.R")
 
 # Define data
 data <- data.frame(
-  x1 = c(2, 2, -2, -2, 2, 2, -2, -2, 1, 1, -1, -1),
-  x2 = c(2, -2, -2, 2, 2, -2, -2, 2, 1, -1, -1, 1),
-  y = c(1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1)
+  x1 = c(2, 2, -2, -2, 1, 1, -1, -1),
+  x2 = c(2, -2, -2, 2, 1, -1, -1, 1),
+  y = c(1, 1, 1, 1, -1, -1, -1, -1)
 )
 
 
-svm <- ksvm(y~., data, type="C-svc",C = 100, kernel="vanilladot")
+svm <- ksvm(y~., data, type="C-svc",C = 100, kernel="rbfdot")
 
 # 1. Determine support vectors 
 supportVectors <- data[svm@SVindex, -3]
@@ -24,14 +24,13 @@ kernel_matrix
 
 # 3. Width of street
 w <- colSums(coef(svm)[[1]] * data[SVindex(svm),])
-w <- w[-3]
 b <- svm@b
 
 widthB = 2/(sqrt(sum((w)^2)))
 widthB
 
 # 4. Vector of weights, normal to hyperplane (W)
-w
+w <- w
 
 # 5. Vector B
 b
@@ -51,6 +50,9 @@ paste(c("[",w,"]' * x + [",b,"] = 0"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = 1"), collapse=" ")
 paste(c("[",w,"]' * x + [",b,"] = -1"), collapse=" ")
 
-# 7. Classification
-print_clasificacion(c(5,6), w, b)
-print_clasificacion(c(1,-4), w, b)
+test.data <- data.frame(
+  x1=c(0, 4),
+  x2=c(0,4)
+)
+
+predict(svm, test.data, type="response")
