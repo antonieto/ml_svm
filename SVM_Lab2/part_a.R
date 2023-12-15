@@ -1,12 +1,12 @@
-# Importamos las Librer�as necesarias
+# Importamos las Librerías necesarias
 library (kernlab)
 library(e1071)
 source("lib.R")
 
-# Creamos la funci�n que dir� a que clase pertenece cada punto
+# Creamos la función que dice a que clase pertenece cada punto
 
 
-## APARTADO A ##################################################################
+## APARTADO A ###################################
 
 # Creamos el conjunto de datos
 dataA <- data.frame(
