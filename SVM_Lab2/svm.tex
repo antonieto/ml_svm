@@ -1,0 +1,671 @@
+\documentclass[fleqn]{llncs}
+\usepackage{geometry}
+\geometry{b5paper, left=2.5cm, right=2.5cm, top=2cm, bottom=2cm} % Adjust the margins as needed
+
+%load needed packages
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{csvsimple}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[spanish]{babel}
+
+
+\pgfplotsset{compat=newest}
+\DeclareMathOperator{\sgn}{sgn}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.953, 0.953, 0.948}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset {style = mystyle}
+
+\setlength{\parindent}{0em}
+
+\graphicspath{ {./images/} }
+
+\setcounter{secnumdepth}{2}
+
+\setcounter{MaxMatrixCols}{20}
+\AtBeginEnvironment{pmatrix}{\setlength{\arraycolsep}{6pt}}
+
+\begin{document}
+
+\title{Práctica 3 -- SVM}
+
+\author{Fynn Meffert, José Antonio Chaires Monroy, Luis David López Magaña}
+\institute{Aprendizaje Computacional. Universidad de Málaga.}
+
+\maketitle
+
+\vspace{1cm} % Space down the title
+
+\section{Abstract}
+
+En nuestro proyecto, nos sumergimos en las complejidades de las Máquinas de Soporte Vectorial (SVM) utilizando el versátil lenguaje de programación R y el paquete `kernlab`. Nuestro enfoque se centró en comprender de manera exhaustiva la funcionalidad de las SVM mediante la exploración de diversos conjuntos de datos pequeños. Utilizando la función ksvm, navegamos a través de componentes esenciales de las SVM, como la identificación de vectores de soporte, la extracción de valores de kernel y la determinación del ancho de la frontera de decisión.\\
+
+Nuestra investigación se extendió para revelar elementos críticos como los vectores de peso y el vector independiente B, componentes fundamentales en la interpretación del modelo SVM. La culminación de nuestros esfuerzos llevó a la derivación de la ecuación del hiperplano, delineando los planos de soporte positivo y negativo. Este viaje analítico nos dotó de la capacidad para clasificar puntos de manera efectiva, una aplicación fundamental de las SVM.\\
+
+Para demostrar la aplicación práctica de nuestro enfoque, aplicamos estas metodologías al renombrado conjunto de datos IRIS. Al entrenar una máquina de soporte vectorial en el conjunto de datos, desarrollamos con éxito un modelo robusto capaz de clasificar flores según sus atributos distintivos. Este proyecto no solo iluminó el funcionamiento interno de las SVM, sino que también demostró su eficacia en tareas de clasificación del mundo real.\\
+
+\newpage
+
+\section{Tarea a)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-a]{../ml_svm/SVM_Lab2/part_a.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{align*}
+	\overrightarrow{v_1} =
+		\begin{pmatrix}
+			0 \\
+			0 \\
+		\end{pmatrix},
+	\qquad
+	\overrightarrow{v_2} =
+		\begin{pmatrix}
+			4 \\
+			4 \\
+		\end{pmatrix}
+\end{align*}
+
+\subsection{Los Valores del Kernel}
+\begin{align*}
+	K_{AA} = 0,
+	\qquad
+	K_{AB} = K_{BA} = 0,
+	\qquad
+	K_{BB} = 32,
+\end{align*}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho \approx 0.7071
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+		\begin{pmatrix}
+			-2 \\
+			-2 \\
+		\end{pmatrix}
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} = 0
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		-2 \\
+		-2 \\
+	\end{pmatrix} * \overrightarrow{x} = 0,
+	\qquad
+	\begin{pmatrix}
+		-2 \\
+		-2 \\
+	\end{pmatrix} * \overrightarrow{x} = 1,
+	\qquad
+	\begin{pmatrix}
+		-2 \\
+		-2 \\
+	\end{pmatrix} * \overrightarrow{x} = -1
+\end{align*}
+
+\subsection{Determinación de la Clase}
+\begin{align*}
+	clase \left(
+	\begin{pmatrix}
+		5 \\
+		6 \\
+	\end{pmatrix} \right) = -1,
+	\qquad
+	clase \left(
+	\begin{pmatrix}
+		1 \\
+		-4 \\
+	\end{pmatrix} \right) = 1
+\end{align*}
+
+
+\newpage
+
+
+\section{Tarea b)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-b]{../ml_svm/SVM_Lab2/part_b.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{align*}
+	\overrightarrow{v_1} =
+	\begin{pmatrix}
+		2 \\
+		0 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_2} =
+	\begin{pmatrix}
+		0 \\
+		0 \\
+	\end{pmatrix}
+	\qquad
+	\overrightarrow{v_3} =
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{Los Valores del Kernel}
+\begin{align*}
+	K_{AA} = 4,
+	\qquad
+	K_{AB} = K_{BA} = 0,
+	\qquad
+	K_{BB} = 0,
+	\quad
+	K_{BC} = K_{CB} = 0,
+	\quad
+	K_{CC} = 2
+\end{align*}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho \approx 1.898
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+	\begin{pmatrix}
+		0.9995 \\
+		-0.3335 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} = 0.\overline{3}
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		0.9995 \\
+		-0.3335 \\
+	\end{pmatrix} * \overrightarrow{x} + 0.\overline{3} = 0,
+	\qquad
+	\begin{pmatrix}
+		0.9995 \\
+		-0.3335 \\
+	\end{pmatrix} * \overrightarrow{x} + 0.\overline{3} = -1
+\end{align*}
+\begin{align*}
+	\begin{pmatrix}
+		0.9995 \\
+		-0.3335 \\
+	\end{pmatrix} * \overrightarrow{x} + 0.\overline{3} = -1
+\end{align*}
+
+\subsection{Determinación de la Clase}
+\begin{align*}
+	clase \left(
+	\begin{pmatrix}
+		5 \\
+		6 \\
+	\end{pmatrix} \right) = 1,
+	\qquad
+	clase \left(
+	\begin{pmatrix}
+		1 \\
+		-4 \\
+	\end{pmatrix} \right) = 1
+\end{align*}
+
+\newpage
+
+\section{Tarea c)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-c]{../ml_svm/SVM_Lab2/part_c.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{align*}
+	\overrightarrow{v_1} =
+	\begin{pmatrix}
+		2 \\
+		2 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_2} =
+	\begin{pmatrix}
+		2 \\
+		-2 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_3} =
+	\begin{pmatrix}
+		-2 \\
+		-2 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_4} =
+	\begin{pmatrix}
+		-2 \\
+		2 \\
+	\end{pmatrix},
+\end{align*}
+\begin{align*}
+	\overrightarrow{v_5} =
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_6} =
+	\begin{pmatrix}
+		1 \\
+		-1 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_7} =
+	\begin{pmatrix}
+		-1 \\
+		-1 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_8} =
+	\begin{pmatrix}
+		-1 \\
+		1 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{Los Valores del Kernel}
+\begin{align*}
+	\begin{pmatrix}
+		8 & 0 & -8 & 0 & 4 & 0 & -4 & 0 \\
+		0 & 8 & 0 & -8 & 0 & 4 & 0 & -4 \\
+		-8 & 0 & 8 & 0 & -4 & 0 & 4 & 0 \\
+		0 & -8 & 0 & 8 & 0 & -4 & 0 & 4 \\
+		4 & 0 & -4 & 0 & 2 & 0 & -2 & 0 \\
+		0 & 4 & 0 & -4 & 0 & 2 & 0 & -2 \\
+		-4 & 0 & 4 & 0 & -2 & 0 & 2 & 0 \\
+		0 & -4 & 0 & 4 & 0 & -2 & 0 & 2 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho \approx 0.08184
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+	\begin{pmatrix}
+		6.411*10^{-5} \\
+		-1.515*10^{-3} \\
+		1.197 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} = -2.060
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		6.411*10^{-5} \\
+		-1.515*10^{-3} \\
+		1.197 \\
+	\end{pmatrix} * \overrightarrow{x} + -2.060 = 0,
+	\qquad
+	\begin{pmatrix}
+		6.411*10^{-5} \\
+		-1.515*10^{-3} \\
+		1.197 \\
+	\end{pmatrix} * \overrightarrow{x} + -2.060 = -1,
+\end{align*}
+\begin{align*}
+	\begin{pmatrix}
+		6.411*10^{-5} \\
+		-1.515*10^{-3} \\
+		1.197 \\
+	\end{pmatrix} * \overrightarrow{x} + -2.060 = -1
+\end{align*}
+
+\subsection{Determinación de la Clase}
+\begin{align*}
+	clase \left(
+	\begin{pmatrix}
+		0 \\
+		0 \\
+	\end{pmatrix} \right) = -1,
+	\qquad
+	clase \left(
+	\begin{pmatrix}
+		4 \\
+		4 \\
+	\end{pmatrix} \right) = 1
+\end{align*}
+
+
+\newpage
+
+
+\section{Tarea d)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-d]{../ml_svm/SVM_Lab2/part_d.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{align*}
+	\overrightarrow{v_1} =
+	\begin{pmatrix}
+		2 \\
+		2 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_2} =
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{Los Valores del Kernel}
+\begin{align*}
+	\begin{pmatrix}
+		8 & 32 & 24 & 32 &  8 & 32 & 24 & 32 &  4 &  0 & -4 &  0 \\
+		32 &136 & 96 &120 & 32 &136 & 96 &120 & 16 &  4 &-16 & -4 \\
+		24 & 96 & 72 & 96 & 24 & 96 & 72 & 96 & 12 &  0 &-12 &  0 \\
+		32 &120 & 96 &136 & 32 &120 & 96 &136 & 16 & -4 &-16 &  4 \\
+		8 & 32 & 24 & 32 &  8 & 32 & 24 & 32 &  4 &  0 & -4 &  0 \\
+		32 &136 & 96 &120 & 32 &136 & 96 &120 & 16 &  4 &-16 & -4 \\
+		24 & 96 & 72 & 96 & 24 & 96 & 72 & 96 & 12 &  0 &-12 &  0 \\
+		32 &120 & 96 &136 & 32 &120 & 96 &136 & 16 & -4 &-16 &  4 \\
+		4 & 16 & 12 & 16 &  4 & 16 & 12 & 16 &  2 &  0 & -2 &  0 \\
+		0 &  4 &  0 & -4 &  0 &  4 &  0 & -4 &  0 &  2 &  0 & -2 \\
+		-4 &-16 &-12 &-16 & -4 &-16 &-12 &-16 & -2 &  0 &  2 &  0 \\
+		0 & -4 &  0 &  4 &  0 & -4 &  0 &  4 &  0 & -2 &  0 &  2 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho \approx 1.414
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} = 3
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix} * \overrightarrow{x} + 3 = 0,
+	\qquad
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix} * \overrightarrow{x} + 3 = 1,
+	\quad
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix} * \overrightarrow{x} + 3 = -1
+\end{align*}
+
+\newpage
+
+\subsection{Plot}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{d}
+\end{figure}
+
+\newpage
+
+\section{Tarea e)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-e]{../ml_svm/SVM_Lab2/part_e.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{align*}
+	\overrightarrow{v_1} =
+	\begin{pmatrix}
+		5 \\
+		3 \\
+	\end{pmatrix},
+	\qquad
+	\overrightarrow{v_2} =
+	\begin{pmatrix}
+		1 \\
+		0 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{Los Valores del Kernel}
+\begin{align*}
+	\begin{pmatrix}
+		34 & 60 & 49 & 75 &  5 &  3 & -3 & -5 \\
+		60 & 106 & 87 & 133 &  9 &  5 & -5 & -9 \\
+		49 & 87 & 73 & 111 &  8 &  3 & -3 & -8 \\
+		75 & 133 & 111 & 169 & 12 &  5 & -5 & -12 \\
+		5 & 9 & 8 & 12 &  1 &  0 &  0 & -1 \\
+		3 & 5 & 3 & 5 &  0 &  1 & -1 &  0 \\
+		-3 & -5 & -3 & -5 &  0 & -1 &  1 &  0 \\
+		-5 & -9 & -8 & -12 & -1 &  0 &  0 &  1 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho = 5
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+	\begin{pmatrix}
+		0.32 \\
+		0.24 \\
+	\end{pmatrix}
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} = 1.32
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		0.32 \\
+		0.24 \\
+	\end{pmatrix} * \overrightarrow{x} + 1.32 = 0,
+	\qquad
+	\begin{pmatrix}
+		0.32 \\
+		0.24 \\
+	\end{pmatrix} * \overrightarrow{x} + 1.32 = 1,
+\end{align*}
+\begin{align*}
+	\begin{pmatrix}
+		0.32 \\
+		0.24 \\
+	\end{pmatrix} * \overrightarrow{x} + 1.32 = -1
+\end{align*}
+
+\subsection{Determinación de la Clase}
+\begin{align*}
+	clase \left(
+	\begin{pmatrix}
+		4 \\
+		5 \\
+	\end{pmatrix} \right) = 1
+\end{align*}
+
+\subsection{Plot}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{e}
+\end{figure}
+
+\newpage
+
+\section{Tarea f)}
+
+\subsection{Script R Usado para las Computaciones}
+\lstinputlisting[language=R, label=listing:code-f]{../ml_svm/SVM_Lab2/part_f.R}
+
+\newpage
+
+\subsection{Los Vectores Soporte}
+\begin{tabular}{c | c | c | c}
+	Sepal.Length & Sepal.Width & Petal.Width & Species \\
+	\hline
+	5.1 & 3.3 & 0.5 & setosa \\
+	4.5 & 2.3 & 0.3 & setosa \\
+	4.9 & 2.4 & 1.0 & versicolor \\
+	5.9 & 3.2 & 1.8 & versicolor \\
+	6.3 & 2.5 & 1.5 & versicolor \\
+	6.7 & 3.0 & 1.7 & versicolor \\
+	6.0 & 2.7 & 1.6 & versicolor \\
+	5.1 & 2.5 & 1.1 & versicolor \\
+	4.9 & 2.5 & 1.7 & virginica \\
+	6.0 & 2.2 & 1.5 & virginica \\
+	6.2 & 2.8 & 1.8 & virginica \\
+	6.1 & 3.0 & 1.8 & virginica \\
+	7.2 & 3.0 & 1.6 & virginica \\
+	6.3 & 2.8 & 1.5 & virginica \\
+	6.0 & 3.0 & 1.8 & virginica \\
+\end{tabular}
+
+\subsection{Los Valores del Kernel}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{f_kernel}
+\end{figure}
+
+\subsection{El Ancho del Canal}
+\begin{align*}
+	ancho \approx 0.3397
+\end{align*}
+
+\subsection{El Vector $\overrightarrow{w}$}
+\begin{align*}
+	\overrightarrow{w} =
+	\begin{pmatrix}
+		-5.469 \\
+		0.2363 \\
+		1.962 \\
+		0.9175
+	\end{pmatrix}
+\end{align*}
+\begin{tabular}{c | c | c | c}
+	Sepal.Length & Sepal.Width & Petal.Length & Petal.Width \\
+	\hline
+	-5.4691320 & 0.2362545 & 1.9623159 & 0.9175388 \\
+\end{tabular}
+
+\subsection{El Vector $\overrightarrow{b}$}
+\begin{align*}
+	\overrightarrow{b} =
+	\begin{pmatrix}
+		-1.474 & -0.2958 & 10.58
+	\end{pmatrix}
+\end{align*}
+
+\subsection{La Ecuación del Hiperplano y de los Planos de Soporte Positivo y Negativo}
+\begin{align*}
+	\begin{pmatrix}
+		-5.469 \\
+		0.2363 \\
+		1.962 \\
+		0.9175
+		\end{pmatrix} * \overrightarrow{x} + \begin{pmatrix}
+		-1.474 & -0.2958 & 10.58
+		\end{pmatrix} = 0,
+\end{align*}
+\begin{align*}
+	\begin{pmatrix}
+		-5.469 \\
+		0.2363 \\
+		1.962 \\
+		0.9175
+	\end{pmatrix} * \overrightarrow{x} + \begin{pmatrix}
+		-1.474 & -0.2958 & 10.58
+	\end{pmatrix} = 1
+\end{align*}
+\begin{align*}
+	\begin{pmatrix}
+		-5.469 \\
+		0.2363 \\
+		1.962 \\
+		0.9175
+	\end{pmatrix} * \overrightarrow{x} + \begin{pmatrix}
+		-1.474 & -0.2958 & 10.58
+	\end{pmatrix} = -1
+\end{align*}
+
+
+\end{document}
