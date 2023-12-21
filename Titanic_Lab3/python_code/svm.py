@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelBinarizer
 
-import encoding as data
+import data as data
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import accuracy_score, roc_curve, RocCurveDisplay
@@ -23,9 +23,9 @@ for kernel in kernels:
     accuracies = []
 
     # 10-fold cross-validation
-    for train_index, test_index in data.kf.split(data.X):
-        Xi_train, Xi_test = data.X.iloc[train_index], data.X.iloc[test_index]
-        yi_train, yi_test = data.y.iloc[train_index], data.y.iloc[test_index]
+    for train_index, test_index in data.kf.split(data.X_train):
+        Xi_train, Xi_test = data.X_train.iloc[train_index], data.X_train.iloc[test_index]
+        yi_train, yi_test = data.y_train.iloc[train_index], data.y_train.iloc[test_index]
 
         # Fit the model to the training data
         svm_classifier.fit(Xi_train, yi_train)
@@ -84,9 +84,9 @@ for c in cs:
     # Initialize accuracy array for classifier
     accuracies = []
 
-    for train_index, test_index in data.kf.split(data.X):
-        Xi_train, Xi_test = data.X.iloc[train_index], data.X.iloc[test_index]
-        yi_train, yi_test = data.y.iloc[train_index], data.y.iloc[test_index]
+    for train_index, test_index in data.kf.split(data.X_train):
+        Xi_train, Xi_test = data.X_train.iloc[train_index], data.X_train.iloc[test_index]
+        yi_train, yi_test = data.y_train.iloc[train_index], data.y_train.iloc[test_index]
 
         # Fit the model to the training data
         svm_classifier.fit(Xi_train, yi_train)
@@ -140,9 +140,9 @@ for gamma in gammas:
     # Initialize accuracy array for classifier
     accuracies = []
 
-    for train_index, test_index in data.kf.split(data.X):
-        Xi_train, Xi_test = data.X.iloc[train_index], data.X.iloc[test_index]
-        yi_train, yi_test = data.y.iloc[train_index], data.y.iloc[test_index]
+    for train_index, test_index in data.kf.split(data.X_train):
+        Xi_train, Xi_test = data.X_train.iloc[train_index], data.X_train.iloc[test_index]
+        yi_train, yi_test = data.y_train.iloc[train_index], data.y_train.iloc[test_index]
 
         # Fit the model to the training data
         svm_classifier.fit(Xi_train, yi_train)
@@ -178,34 +178,3 @@ plt.xticks([0.001, 0.01, 0.1, 1])
 plt.tight_layout()
 plt.savefig('../images/svm_accuracy_gamma.png', dpi=300)
 plt.show()
-
-# Plot the ROC curves for the best classifier
-# Determine class ids for every class
-label_binarizer = LabelBinarizer().fit(y_train.to_numpy())
-class_id_value = {}
-for c in data.class_order:
-    class_id = data.encoder.categories_[len(data.encoder.categories_)-1].tolist().index(c)
-    class_id_value[class_id] = c
-
-for class_id in class_id_value.keys():
-    classname = class_id_value[class_id]
-    y_score = svm_classifier.fit(X_train, y_train).predict_proba(X_test)
-    y_onehot_test = label_binarizer.transform(y_test.to_numpy())
-
-    RocCurveDisplay.from_predictions(
-        y_onehot_test[:, class_id],
-        y_score[:, class_id],
-        name=f"{classname} vs the rest",
-        color="darkorange",
-        plot_chance_level=True,
-    )
-
-    rest = [element for element in class_id_value.values() if element != classname]
-    plt.axis("square")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title(f"One-vs-Rest ROC curves:\n\'{classname}\' vs {rest}")
-    plt.legend()
-    plt.savefig(f'../images/roc_svm_{classname}')
-    plt.show()
-

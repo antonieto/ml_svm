@@ -1,4 +1,4 @@
-import encoding as data
+import data as data
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import accuracy_score

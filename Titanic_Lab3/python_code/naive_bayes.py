@@ -2,7 +2,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import LabelBinarizer
 
-import encoding as data
+import data as data
 import numpy as np
 from sklearn.metrics import accuracy_score, roc_curve, RocCurveDisplay
 from sklearn.naive_bayes import MultinomialNB
