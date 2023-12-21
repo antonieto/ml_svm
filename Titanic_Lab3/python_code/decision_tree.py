@@ -1,8 +1,19 @@
+import pandas as pd
+
 import data as data
 import numpy as np
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_curve, roc_auc_score
 from sklearn.tree import DecisionTreeClassifier, plot_tree
+
+
+"""
+Usando el clasificador DecisionTree, ajustando los hiperparametros 'criterion' y 'max_depth',
+se puede obtener un accuracy de 77.11% con el criterion 'entropy' y un 'max_depth' de 3.
+El AUC es 0.9875.
+A continuación vemos el entrenamiento.
+"""
+
 
 # Add criterion values to test
 criterions = ['gini', 'entropy']
@@ -19,9 +30,9 @@ for criterion in criterions:
     accuracies = []
 
     # 10-fold cross-validation
-    for train_index, test_index in data.kf.split(data.X):
-        Xi_train, Xi_test = data.X.iloc[train_index], data.X.iloc[test_index]
-        yi_train, yi_test = data.y.iloc[train_index], data.y.iloc[test_index]
+    for train_index, test_index in data.kf.split(data.X_train):
+        Xi_train, Xi_test = data.X_train.iloc[train_index], data.X_train.iloc[test_index]
+        yi_train, yi_test = data.y_train.iloc[train_index], data.y_train.iloc[test_index]
 
         # Fit the model to the training data
         decision_tree_classifier.fit(Xi_train, yi_train)
@@ -43,13 +54,6 @@ for criterion in criterions:
     print('Accuracy( criterion = ', criterion, ') =', '{:.2f} %'.format(round(np.mean(accuracies) * 100, 2)))
     print('Std( criterion =', criterion, ')\t\t =', '{:.4f}'.format(round(np.std(accuracies), 4)))
 
-    # Plot the best decision tree
-    plt.figure()
-    plot_tree(best_tree, filled=True, class_names=data.class_order, feature_names=data.data.columns, rounded=True)
-    plt.tight_layout()
-    plt.savefig('../images/decision_tree_entropy.png', dpi=800)
-    plt.show()
-
 
 # Test the max_depth hyperparameter
 
@@ -61,17 +65,21 @@ max_depths = range(1, 21)
 
 # Initialize best tree
 best_tree = DecisionTreeClassifier()
+y_train = pd.Series()
+y_test = pd.Series()
+X_train = pd.Series()
+X_test = pd.Series()
 
 # 10-fold cross-validation
 for n in max_depths:
-    decision_tree_classifier = DecisionTreeClassifier(max_depth=n)
+    decision_tree_classifier = DecisionTreeClassifier(criterion='entropy', max_depth=n)
 
     # Initialize accuracy array for classifier
     accuracies = []
 
-    for train_index, test_index in data.kf.split(data.X):
-        Xi_train, Xi_test = data.X.iloc[train_index], data.X.iloc[test_index]
-        yi_train, yi_test = data.y.iloc[train_index], data.y.iloc[test_index]
+    for train_index, test_index in data.kf.split(data.X_train):
+        Xi_train, Xi_test = data.X_train.iloc[train_index], data.X_train.iloc[test_index]
+        yi_train, yi_test = data.y_train.iloc[train_index], data.y_train.iloc[test_index]
 
         # Fit the model to the training data
         decision_tree_classifier.fit(Xi_train, yi_train)
@@ -87,6 +95,10 @@ for n in max_depths:
         # Update best tree if accuracy is biggest
         if accuracies_before != [] and n == 10 and accuracy > max(accuracies_before):
             best_tree = decision_tree_classifier
+            X_train = Xi_train
+            X_test = Xi_test
+            y_train = yi_train
+            y_test = yi_test
 
     accuracy_by_n.append(np.mean(accuracies))
 
@@ -106,7 +118,32 @@ plt.show()
 
 # Plot the best decision tree
 plt.figure()
-plot_tree(best_tree, filled=True, class_names=data.class_order, feature_names=data.data.columns, rounded=True)
+plot_tree(best_tree, filled=True, class_names=['survived', 'did not survive'], feature_names=data.X_train.columns, rounded=True)
 plt.tight_layout()
-plt.savefig('../images/decision_tree.png', dpi=800)
+plt.savefig('../images/decision_tree_final.png', dpi=800)
 plt.show()
+
+# Plot the ROC curve
+
+# Predict probabilities for positive class (class 1)
+y_probabilities = best_tree.predict_proba(X_test)[:, 1]
+
+# Calculate ROC curve
+fpr, tpr, thresholds = roc_curve(y_test, y_probabilities)
+
+# Calculate AUC (Area Under the Curve)
+auc = roc_auc_score(y_test, y_probabilities)
+print('\nDecision Tree Classifier AUC:', auc)
+
+# Plot ROC curve
+plt.figure(figsize=(8, 8))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'AUC = {auc:.2f}')
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlabel('False Positive Rate (FPR)')
+plt.ylabel('True Positive Rate (TPR)')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc='lower right')
+plt.savefig('../images/decision_tree_roc.png', dpi=800)
+plt.show()
+
+
