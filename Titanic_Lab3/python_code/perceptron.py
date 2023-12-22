@@ -1,11 +1,19 @@
 # Multi layer perceptron
 
-from data import kf, X_train, y_train
 import numpy as np
 from matplotlib import pyplot as plt
+from data import kf, X_train, y_train
 from sklearn.metrics import accuracy_score, roc_curve, roc_auc_score
 from sklearn.neural_network import MLPClassifier
 
+
+'''
+  Usando un clasificador de perceptrón multicapa logramos obtener una precisión
+  de 77.43%, seleccionando una función de activación `logistic`, y un conjunto
+  de tamaños para las capas intermedias del perceptrón de 512 y 256.
+
+  El área bajo la curva obtenida (AUC) es de 0,74.
+'''
 
 # Create MLP classifier
 best_mlp = None
@@ -39,6 +47,7 @@ for sizes in layer_sizes:
       batch_size=64,
       max_iter=600
   )
+  max_acc = -float('inf')
   for train_index, test_index in kf.split(X_train):
         Xi_train, Xi_test = X_train.iloc[train_index], X_train.iloc[test_index]
         yi_train, yi_test = y_train.iloc[train_index], y_train.iloc[test_index]
@@ -55,7 +64,9 @@ for sizes in layer_sizes:
         accuracies.append(accuracy)
 
         # Update best tree if accuracy is biggest
-        if accuracies_before != [] and accuracy > max(accuracies_before):
+        accuracies.append(accuracy)
+        if accuracy > max_acc:
+          max_acc = accuracy
           best_sizes = sizes
           best_mlp = mlp
 
@@ -82,6 +93,7 @@ for activation in activation_choices:
       max_iter=600
   )
   accuracies = []
+  max_acc = -float('inf')
   for train_index, test_index in kf.split(X_train):
     Xi_train, Xi_test = X_train.iloc[train_index], X_train.iloc[test_index]
     yi_train, yi_test = y_train.iloc[train_index], y_train.iloc[test_index]
@@ -94,13 +106,11 @@ for activation in activation_choices:
 
     # Calculate accuracy and append to the accuracies list
     accuracy = accuracy_score(yi_test, yi_pred)
-    accuracies_before = list(accuracies)
     accuracies.append(accuracy)
 
-    # Update best tree if accuracy is biggest
-    if accuracies_before != [] and accuracy > max(accuracies_before):
+    if accuracy > max_acc:
       best_activation = activation
-      best_mlp = mlp  
+      best_mlp = mlp
 
   print('Accuracy( activation function = ', activation, ') =', '{:.2f} %'.format(round(np.mean(accuracies) * 100, 2)))
   print('Std( activation function =', activation, ')\t\t =', '{:.4f}'.format(round(np.std(accuracies), 4)))
@@ -115,7 +125,7 @@ fpr, tpr, thresholds = roc_curve(y_test, y_probabilities)
 
 # Calculate AUC (Area Under the Curve)
 auc = roc_auc_score(y_test, y_probabilities)
-print('\nDecision Tree Classifier AUC:', auc)
+print('Multi Layer Perceptron Classifier AUC:', auc)
 
 # Plot ROC curve
 plt.figure(figsize=(8, 8))
